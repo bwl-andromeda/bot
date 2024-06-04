@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "bot"
+version = "0.1.0"
+description = ""
+authors = ["Ivanov Nikita <torchhik_darkness@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+aiogram = "^3.6.0"
+
+
+pydantic-settings = "^2.2.1"
+sqlalchemy = "^2.0.30"
+aiosqlite = "^0.20.0"
+
+[tool.aerich]
+tortoise_orm = "config.tortoise_config"
+location = "./migrations"
+src_folder = "./."
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+
