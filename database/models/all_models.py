@@ -5,7 +5,8 @@ from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 
 class Base(AsyncAttrs, DeclarativeBase):
     created: Mapped[DateTime] = mapped_column(DateTime, default=func.now())
-    updated: Mapped[DateTime] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
+    updated: Mapped[DateTime] = mapped_column(
+        DateTime, default=func.now(), onupdate=func.now())
 
 
 class User(Base):

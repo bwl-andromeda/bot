@@ -7,7 +7,7 @@ from bot.keyboards.kb import kb_start, main_menu_kb
 from aiogram.fsm.context import FSMContext
 from bot.fsm.registration import Reg
 from sqlalchemy.ext.asyncio import AsyncSession
-from database.models.orm_operations import add_user,get_user
+from database.models.orm_operations import add_user, get_user
 from database.models.engine import session_maker
 import re
 
@@ -49,8 +49,7 @@ async def start(message: Message):
 @router.callback_query(F.data == "teacher")
 async def start_teacher(call: CallbackQuery, state: FSMContext):
     await call.answer('Ты выбрал роль преподавателя!', show_alert=False)
-    await state.update_data(tg_id=call.message.from_user.id,
-                            role='teacher')
+    await state.update_data(role='teacher')
     await state.set_state(Reg.fio)
     await call.message.answer(f'Принял!\nВведи пожалуйста свое ФИО в формате: "Фамилия Имя Отчество"')
 
@@ -60,7 +59,7 @@ async def teacher_fio(message: Message, state: FSMContext):
     if not check_full_name(message.text):
         await message.answer('Неверно введено ФИО, попробуй еще раз!')
     else:
-        await state.update_data(fio=message.text,
+        await state.update_data(tg_id=message.from_user.id, fio=message.text,
                                 tg_username=f'@{message.from_user.username}',)
         await state.set_state(Reg.phone)
         await message.answer(f'Принял!\nВведи пожалуйста свой номер телефона в формате:\n+7(999)999-99-99 или +79998887766')
@@ -76,16 +75,14 @@ async def teacher_phone(message: Message, state: FSMContext):
         async with session_maker() as session:
             await add_user(session, data)
             await message.answer(f'Принял, регистрация прошла успешно!\nФИО: {data['fio']}\nНомер телефона: {data['phone']}',
-                             reply_markup=main_menu_kb.as_markup(resize_keyboard=True, one_time_keyboard=True))
+                                 reply_markup=main_menu_kb.as_markup(resize_keyboard=True, one_time_keyboard=True))
             await state.clear()
 
 
 @router.callback_query(F.data == 'student')
 async def start_student(call: CallbackQuery, state: FSMContext):
     await call.answer('Ты выбрал роль ученика!', show_alert=False)
-    await state.update_data(tg_id=call.message.from_user.id,
-                            tg_username=f'@{call.message.from_user.username}',
-                            role='student')
+    await state.update_data(role='student')
     await state.set_state(Reg.fio)
     await call.message.answer('Принял!\nВведи пожалуйста свое ФИО в формате: "Фамилия Имя Отчество"')
 
@@ -95,7 +92,7 @@ async def student_fio(message: Message, state: FSMContext):
     if not check_full_name(message.text):
         await message.answer('Неверно введено ФИО, попробуй еще раз!')
     else:
-        await state.update_data(fio=message.text)
+        await state.update_data(tg_id=message.from_user.id, tg_username=f'@{message.from_user.username}', fio=message.text)
         await state.set_state(Reg.phone)
         await message.answer('Принял!\nВведи пожалуйста свой номер телефона в формате:\n+7(999)999-99-99 или '
                              '+79998887766')
