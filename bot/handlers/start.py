@@ -15,6 +15,9 @@ router = Router()
 
 
 def check_full_name(full_name):
+    """
+    TODO: Оптимизировать проверку имени , написать тесты для них , и улучшить проверку
+    """
     pattern = r'^[А-ЯЁ][а-яё]+\s[А-ЯЁ][а-яё]+\s[А-ЯЁ][а-яё]+$'
 
     if re.match(pattern, full_name):
@@ -36,6 +39,7 @@ def check_phone_number(phone_number):
 async def start(message: Message):
     """
     Команда /start
+    TODO: Добавить еще что-то!
     """
     if message.chat.type == "private":
         async with session_maker() as session:
